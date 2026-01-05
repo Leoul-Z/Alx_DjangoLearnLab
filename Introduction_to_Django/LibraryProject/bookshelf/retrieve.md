@@ -1,1 +1,12 @@
-## Retrieve Operation\n\nBook.objects.all()\n# Expected Output: <QuerySet [<Book: 1984 by George Orwell>]>
+# Retrieve Operation
+
+This file documents how to retrieve `Book` objects from the database using Django ORM.
+
+---
+
+## Retrieve All Books
+
+```python
+from bookshelf.models import Book
+Book.objects.all()
+Book.objects.get(title="1984")

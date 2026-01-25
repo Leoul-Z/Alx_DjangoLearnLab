@@ -9,7 +9,7 @@ from .models import Book, Library
 
 # ---- Task 1: List Books & Library Detail ----
 @permission_required('bookshelf.can_view', raise_exception=True)
-def list_books(request):
+def book_list(request):   # <-- renamed to book_list
     books = Book.objects.all()
     output = []
     for book in books:

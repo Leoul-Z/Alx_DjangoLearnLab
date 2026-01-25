@@ -1,3 +1,6 @@
+from django.shortcuts import render
+from .forms import SearchForm
+from .models import Book
 from django.http import HttpResponse
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import user_passes_test, permission_required
@@ -86,3 +89,13 @@ def edit_book(request, pk):
 @permission_required('bookshelf.can_delete', raise_exception=True)
 def delete_book(request, pk):
     return HttpResponse("Delete book page")
+
+
+def search_books(request):
+    form = SearchForm(request.GET or None)
+    results = []
+    if form.is_valid():
+        query = form.cleaned_data['query']
+        # Safe ORM query (no SQL injection risk)
+        results = Book.objects.filter(title__icontains=query)
+    return render(request, 'bookshelf/book_list.html', {'form': form, 'results': results})

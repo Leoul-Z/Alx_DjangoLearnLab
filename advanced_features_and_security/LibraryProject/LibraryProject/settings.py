@@ -118,3 +118,22 @@ USE_TZ = True
 STATIC_URL = 'static/'
 AUTH_USER_MODEL = "yourapp.CustomUser"
 AUTH_USER_MODEL = "bookshelf.CustomUser"
+# SECURITY SETTINGS
+
+DEBUG = False  # Never True in production
+
+ALLOWED_HOSTS = ['yourdomain.com', 'localhost']  # restrict to known hosts
+
+# Browser-side protections
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'  # prevent clickjacking
+
+# Cookies must be sent over HTTPS
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+# Recommended extras
+SECURE_HSTS_SECONDS = 31536000  # enforce HTTPS for 1 year
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True

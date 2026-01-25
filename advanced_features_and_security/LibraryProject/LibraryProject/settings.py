@@ -157,3 +157,9 @@ CSRF_COOKIE_SECURE = True     # CSRF cookies only sent over HTTPS
 X_FRAME_OPTIONS = "DENY"  # Prevent clickjacking by disallowing framing
 SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
 SECURE_BROWSER_XSS_FILTER = True    # Enable browser XSS protection
+# ================================
+# Proxy SSL Header Configuration
+# ================================
+
+# Tell Django to trust the X-Forwarded-Proto header set by your proxy
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

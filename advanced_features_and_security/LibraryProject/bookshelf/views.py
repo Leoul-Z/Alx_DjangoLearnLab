@@ -1,6 +1,3 @@
-from django.shortcuts import render
-from .forms import SearchForm
-from .models import Book
 from django.http import HttpResponse
 from django.views.generic import DetailView
 from django.contrib.auth.decorators import user_passes_test, permission_required
@@ -8,11 +5,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import Group
 from .models import Book, Library
+from .forms import ExampleForm   # <-- required import
 
 
 # ---- Task 1: List Books & Library Detail ----
 @permission_required('bookshelf.can_view', raise_exception=True)
-def book_list(request):   # <-- renamed to book_list
+def book_list(request):
     books = Book.objects.all()
     output = []
     for book in books:
@@ -91,11 +89,13 @@ def delete_book(request, pk):
     return HttpResponse("Delete book page")
 
 
-def search_books(request):
-    form = SearchForm(request.GET or None)
-    results = []
-    if form.is_valid():
-        query = form.cleaned_data['query']
-        # Safe ORM query (no SQL injection risk)
-        results = Book.objects.filter(title__icontains=query)
-    return render(request, 'bookshelf/book_list.html', {'form': form, 'results': results})
+# ---- Example Form View (uses ExampleForm) ----
+def example_form_view(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            # Normally you'd process the data here
+            return HttpResponse("Form submitted successfully!")
+    else:
+        form = ExampleForm()
+    return render(request, 'bookshelf/form_example.html', {'form': form})

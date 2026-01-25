@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+  <h1>📚 Book List</h1>
+
+  <!-- Check if there are any books -->
+  {% if books %}
+    <ul>
+      {% for book in books %}
+        <li>
+          <strong>{{ book.title }}</strong>  
+          by {{ book.author }}  
+          (Published: {{ book.published_date|date:"Y-m-d" }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No books available at the moment.</p>
+  {% endif %}
+{% endblock %}

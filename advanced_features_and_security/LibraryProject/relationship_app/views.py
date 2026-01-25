@@ -3,11 +3,12 @@ from django.views.generic import DetailView
 from django.contrib.auth.decorators import user_passes_test, permission_required
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group
 from .models import Book, Library
 
 
 # ---- Task 1 ----
-
+@permission_required('relationship_app.can_view_book', raise_exception=True)
 def list_books(request):
     books = Book.objects.all()
     output = []
@@ -29,12 +30,14 @@ class LibraryDetailView(DetailView):
 
 
 # ---- Task 2 ----
-
 def register(request):
     if request.method == "POST":
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
+            user = form.save()
+            # Assign default group (Members)
+            member_group, _ = Group.objects.get_or_create(name="Members")
+            user.groups.add(member_group)
             return redirect('login')
     else:
         form = UserCreationForm()
@@ -42,17 +45,16 @@ def register(request):
 
 
 # ---- Task 3 ----
-
 def is_admin(user):
-    return user.userprofile.role == 'Admin'
+    return user.groups.filter(name="Admins").exists()
 
 
 def is_librarian(user):
-    return user.userprofile.role == 'Librarian'
+    return user.groups.filter(name="Librarians").exists()
 
 
 def is_member(user):
-    return user.userprofile.role == 'Member'
+    return user.groups.filter(name="Members").exists()
 
 
 @user_passes_test(is_admin)
@@ -71,7 +73,6 @@ def member_view(request):
 
 
 # ---- Task 4 ----
-
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
     return HttpResponse("Add book page")

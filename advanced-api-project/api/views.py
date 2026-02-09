@@ -31,7 +31,15 @@ class BookListView(generics.ListAPIView):
     ordering = ["title"]  # default ordering
 
 
+# Retrieve single book by ID (read-only for everyone)
+class BookDetailView(generics.RetrieveAPIView):
+    queryset = Book.objects.all()
+    serializer_class = BookSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
 # Create new book (restricted to authenticated users)
+
+
 class BookCreateView(generics.CreateAPIView):
     queryset = Book.objects.all()
     serializer_class = BookSerializer

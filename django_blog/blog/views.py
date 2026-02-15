@@ -1,3 +1,7 @@
+from django.views.generic import CreateView
+from django.urls import reverse
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
 
 # Create your views here.
@@ -52,6 +56,25 @@ def login_view(request):
     else:
         form = AuthenticationForm()
     return render(request, "blog/login.html", {"form": form})
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
+
+    def form_valid(self, form):
+        # Attach the logged-in user as the author
+        form.instance.author = self.request.user
+        # Attach the comment to the correct post
+        post_id = self.kwargs.get("post_id")
+        post = get_object_or_404(Post, pk=post_id)
+        form.instance.post = post
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        # Redirect back to the post detail page after comment creation
+        return reverse("post-detail", kwargs={"pk": self.kwargs.get("post_id")})
 
 
 def logout_view(request):

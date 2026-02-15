@@ -4,6 +4,15 @@
 <p>{{ object.content }}</p>
 <p>By {{ object.author }} on {{ object.published_date }}</p>
 
+<!-- Tags section -->
+<p>Tags:
+  {% for tag in object.tags.all %}
+    <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>
+  {% empty %}
+    No tags
+  {% endfor %}
+</p>
+
 <h3>Comments</h3>
 <ul>
   {% for comment in object.comments.all %}

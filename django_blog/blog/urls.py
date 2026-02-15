@@ -4,6 +4,7 @@ from .views import (
     PostUpdateView, PostDeleteView,
     CommentCreateView, CommentUpdateView, CommentDeleteView
 )
+from .views import SearchResultsView, PostListView
 
 urlpatterns = [
     # Post CRUD
@@ -20,4 +21,6 @@ urlpatterns = [
          name="comment-update"),           # update
     path("comment/<int:pk>/delete/", CommentDeleteView.as_view(),
          name="comment-delete"),           # delete
+    path("search/", SearchResultsView.as_view(), name="search-results"),
+    path("tags/<str:tag_name>/", PostListView.as_view(), name="posts-by-tag"),
 ]

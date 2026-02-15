@@ -7,11 +7,12 @@
 <!-- Tags section -->
 <p>Tags:
   {% for tag in object.tags.all %}
-    <a href="{% url 'posts-by-tag' tag.name %}">{{ tag.name }}</a>
+    <a href="{% url 'posts-by-tag' tag.slug %}">{{ tag.name }}</a>
   {% empty %}
     No tags
   {% endfor %}
 </p>
+
 
 <h3>Comments</h3>
 <ul>

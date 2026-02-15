@@ -3,8 +3,30 @@
 <h2>{{ object.title }}</h2>
 <p>{{ object.content }}</p>
 <p>By {{ object.author }} on {{ object.published_date }}</p>
-{% if user == object.author %}
-  <a href="{% url 'post-update' object.pk %}">Edit</a>
-  <a href="{% url 'post-delete' object.pk %}">Delete</a>
+
+<h3>Comments</h3>
+<ul>
+  {% for comment in object.comments.all %}
+    <li>
+      <p>{{ comment.content }}</p>
+      <small>By {{ comment.author }} on {{ comment.created_at }}</small>
+      {% if user == comment.author %}
+        <a href="{% url 'comment-update' comment.pk %}">Edit</a>
+        <a href="{% url 'comment-delete' comment.pk %}">Delete</a>
+      {% endif %}
+    </li>
+  {% empty %}
+    <li>No comments yet.</li>
+  {% endfor %}
+</ul>
+
+{% if user.is_authenticated %}
+<form method="post" action="{% url 'add-comment' object.pk %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Add Comment</button>
+</form>
+{% else %}
+<p><a href="{% url 'login' %}">Login</a> to add a comment.</p>
 {% endif %}
 {% endblock %}

@@ -1,5 +1,4 @@
-from rest_framework import viewsets, permissions
-from rest_framework import filters
+from rest_framework import viewsets, permissions, filters
 from .models import Post, Comment
 from .serializers import PostSerializer, CommentSerializer
 

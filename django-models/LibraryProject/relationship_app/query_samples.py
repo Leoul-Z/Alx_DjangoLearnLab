@@ -10,7 +10,8 @@ django.setup()
 
 def books_by_author(author_name):
     author = Author.objects.get(name=author_name)
-    return author.books.all()
+    # Explicit filter using ForeignKey
+    return Book.objects.filter(author=author)
 
 # 2. List all books in a library
 
@@ -25,3 +26,11 @@ def books_in_library(library_name):
 def librarian_of_library(library_name):
     library = Library.objects.get(name=library_name)
     return library.librarian
+
+
+if __name__ == "__main__":
+    # Example usage
+    print("Books by J.K. Rowling:", books_by_author("J.K. Rowling"))
+    print("Books in Central Library:", books_in_library("Central Library"))
+    print("Librarian of Central Library:",
+          librarian_of_library("Central Library"))

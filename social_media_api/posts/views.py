@@ -9,6 +9,52 @@ from rest_framework.response import Response
 
 from .models import Post
 from .serializers import PostSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from django.contrib.contenttypes.models import ContentType
+
+from .models import Post, Like
+from notifications.models import Notification
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def like_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    like, created = Like.objects.get_or_create(
+        user=request.user,
+        post=post
+    )
+
+    if not created:
+        return Response({"detail": "Post already liked"}, status=400)
+
+    if post.author != request.user:
+        Notification.objects.create(
+            recipient=post.author,
+            actor=request.user,
+            verb="liked your post",
+            content_type=ContentType.objects.get_for_model(Post),
+            object_id=post.id
+        )
+
+    return Response({"detail": "Post liked"})
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def unlike_post(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    like = Like.objects.filter(user=request.user, post=post)
+
+    if not like.exists():
+        return Response({"detail": "You haven't liked this post"}, status=400)
+
+    like.delete()
+    return Response({"detail": "Post unliked"})
 
 
 @api_view(['GET'])
